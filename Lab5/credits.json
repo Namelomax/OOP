@@ -1,0 +1,9 @@
+[
+  {
+    "Id": 1,
+    "Amount": 123,
+    "InterestRate": 2,
+    "RepaymentDate": "2024-12-12T00:00:00",
+    "Comments": "kaas"
+  }
+]
