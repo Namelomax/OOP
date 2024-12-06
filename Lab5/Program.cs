@@ -232,12 +232,123 @@ private Dictionary<string, string> LoadUsers()
                 }
             }
         }
+        static void AddClient(List<Client> clients)
+        {
+            Console.Write("Enter client name: ");
+            string name = Console.ReadLine();
+            while (string.IsNullOrWhiteSpace(name) || ContainsDigits(name))
+            {
+                Console.Write("Invalid name. Enter a valid name (without numbers): ");
+                name = Console.ReadLine();
+            }
+            Console.Write("Enter client phone: ");
+            string phone = Console.ReadLine();
+            while (string.IsNullOrWhiteSpace(phone) || ContainsLetters(phone))
+            {
+                Console.Write("Invalid phone number. Enter a valid phone number: ");
+                phone = Console.ReadLine();
+            }
 
-        static void AddClient(List<Client> clients) { /*...*/ }
-        static void AddCredit(List<Credit> credits) { /*...*/ }
-        static void ShowClients(List<Client> clients) { /*...*/ }
-        static void ShowCredits(List<Credit> credits) { /*...*/ }
-        static void ShowHelp() { /*...*/ }
-        static void Exit(List<Client> clients, List<Credit> credits) { /*...*/ }
+            int id = clients.Count > 0 ? clients[^1].Id + 1 : 1; // Уникальный ID
+            clients.Add(new Client(id, name, phone));
+            Console.WriteLine("Client added successfully.");
+        }
+
+        static void AddCredit(List<Credit> credits)
+        {
+            Console.Write("Enter credit amount: ");
+            if (!double.TryParse(Console.ReadLine(), out double amount) || amount <= 0)
+            {
+                Console.WriteLine("Invalid amount. Try again.");
+                return;
+            }
+
+            Console.Write("Enter interest rate: ");
+            if (!double.TryParse(Console.ReadLine(), out double interestRate) || interestRate <= 0)
+            {
+                Console.WriteLine("Invalid interest rate. Try again.");
+                return;
+            }
+
+            Console.Write("Enter repayment date (YYYY-MM-DD): ");
+            if (!DateTime.TryParse(Console.ReadLine(), out DateTime repaymentDate) || repaymentDate <= DateTime.Now)
+            {
+                Console.WriteLine("Invalid date. Try again.");
+                return;
+            }
+
+            Console.Write("Enter comments: ");
+            string comments = Console.ReadLine();
+
+            int id = credits.Count > 0 ? credits[^1].Id + 1 : 1; // Уникальный ID
+            credits.Add(new Credit(id, amount, interestRate, repaymentDate, comments));
+            Console.WriteLine("Credit added successfully.");
+        }
+
+        static void ShowClients(List<Client> clients)
+        {
+            if (clients.Count == 0)
+            {
+                Console.WriteLine("No clients available.");
+            }
+            else
+            {
+                foreach (var client in clients)
+                {
+                    Console.WriteLine(client);
+                }
+            }
+        }
+
+        static void ShowCredits(List<Credit> credits)
+        {
+            if (credits.Count == 0)
+            {
+                Console.WriteLine("No credits available.");
+            }
+            else
+            {
+                foreach (var credit in credits)
+                {
+                    Console.WriteLine(credit);
+                }
+            }
+        }
+
+        static void ShowHelp()
+        {
+            Console.WriteLine("\nAvailable commands:");
+            Console.WriteLine("add-client   - Add a new client to system");
+            Console.WriteLine("add-credit   - Add a new credit to system");
+            Console.WriteLine("show-clients - Shows all registered clients");
+            Console.WriteLine("show-loans   - Shows all credits and their statuses");
+            Console.WriteLine("help         - Show this list of commands");
+            Console.WriteLine("exit         - Save data and exit the program");
+        }
+
+        static void Exit(List<Client> clients, List<Credit> credits)
+        {
+            DataHandler.SaveToFile(ClientsFile, clients);
+            DataHandler.SaveToFile(CreditsFile, credits);
+            Console.WriteLine("Data saved. Exiting program.");
+            Environment.Exit(0);
+        }
+                static bool ContainsDigits(string input)
+        {
+            foreach (char c in input)
+            {
+                if (char.IsDigit(c)) return true;
+            }
+            return false;
+        }
+
+        static bool ContainsLetters(string input)
+        {
+            foreach (char c in input)
+            {
+                if (char.IsLetter(c)) return true;
+            }
+            return false;
+        }
     }
-}
+    }
